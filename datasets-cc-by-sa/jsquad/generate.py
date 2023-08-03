@@ -88,17 +88,21 @@ def fix_data(example: Dict[str, str]) -> Dict[str, str]:
         example["instruction"] = "新" + example["instruction"]
     return example
 
+def save_data(data: List[Dict[str, str]], filename: str):
+    data = list(map(add_index, enumerate(data)))
+    data = list(map(fix_data, data))
+
+    pd.DataFrame(data).to_json(
+        filename, orient="records", force_ascii=False, lines=True
+    )
 
 def main() -> None:
     train_data: List[Dict[str, str]] = read_json("train.json")
-    # valid_data: List[Dict[str, str]] = read_json("valid.json")
+    valid_data: List[Dict[str, str]] = read_json("valid.json")
     # concat_data: List[Dict[str, str]] = train_data + valid_data
-    concat_data: List[Dict[str, str]] = train_data
-    concat_data = list(map(add_index, enumerate(concat_data)))
-    concat_data = list(map(fix_data, concat_data))
-    pd.DataFrame(concat_data).to_json(
-        "data.jsonl", orient="records", force_ascii=False, lines=True
-    )
+
+    save_data(train_data, 'jsquad_train.jsonl')
+    save_data(valid_data, 'jsquad_valid.jsonl')
 
 
 if __name__ == "__main__":
