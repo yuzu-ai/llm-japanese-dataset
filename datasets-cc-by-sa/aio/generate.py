@@ -5,26 +5,32 @@ import os.path
 URL = "https://jaqket.s3.ap-northeast-1.amazonaws.com/data/aio_02/aio_02_train.jsonl"
 URL2 = "https://jaqket.s3.ap-northeast-1.amazonaws.com/data/aio_02/aio_02_dev_v1.0.jsonl"
 
-file_dir = os.path.dirname(__file__)
+URLS = {'train':URL, 'valid':URL2}
 
-df = pd.read_json(URL, lines=True)
-df2 = pd.read_json(URL2, lines=True)
+for split, url in URLS.items():
 
-df = pd.concat([df, df2]).astype(str)
-df = df.rename(columns={"original_question": "instruction", "original_answer": "output"})
-df["input"] = ""
-df = df[["instruction", "input", "output"]]
-df["id"] = "F" + df.index.astype(str)
+    file_dir = os.path.dirname(__file__)
 
-data_list = df.to_dict(orient="records")
-forward_n = len(data_list) // 1000 + 1
-for i in range(forward_n):
-    file_name = os.path.join(file_dir, "data", f"{i:0>6}.json")
-    json.dump(
-        data_list[i * 1000: min((i+1)*1000, len(data_list))],
-        open(file_name, mode="w", encoding="utf-8"),
-        indent=2, ensure_ascii=False
+    df = pd.read_json(url, lines=True)
+
+    df = df.rename(columns={"original_question": "instruction", "original_answer": "output"})
+    df["input"] = ""
+    df = df[["instruction", "input", "output"]]
+    df["id"] = "F" + df.index.astype(str)
+
+    df.to_json(
+        f"aio_{split}.jsonl", orient="records", force_ascii=False, lines=True
     )
+
+
+    # forward_n = len(data_list) // 1000 + 1
+    # for i in range(forward_n):
+    #     file_name = os.path.join(file_dir, "data", f"{i:0>6}.json")
+    #     json.dump(
+    #         data_list[i * 1000: min((i+1)*1000, len(data_list))],
+    #         open(file_name, mode="w", encoding="utf-8"),
+    #         indent=2, ensure_ascii=False
+    #     )
 
 # df["instruction2"] = df["output"] + "について説明してください。"
 # df["output2"] = df["instruction"]
