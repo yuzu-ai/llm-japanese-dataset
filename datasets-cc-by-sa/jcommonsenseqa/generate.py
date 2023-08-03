@@ -14,13 +14,22 @@ def generate_instruction(row: pd.Series) -> Dict[str, str]:
 
 
 def main() -> None:
-    df: pd.DataFrame = pd.read_json("data.jsonl", orient="records", lines=True)
+    df: pd.DataFrame = pd.read_json("train.jsonl", orient="records", lines=True)
     df_generated: pd.DataFrame = pd.DataFrame(
         [generate_instruction(row) for _, row in df.iterrows()]
     )
     df_generated.to_json(
-        "generated_data.jsonl", orient="records", force_ascii=False, lines=True
+        "jcommonsenseqa_train.jsonl", orient="records", force_ascii=False, lines=True
     )
+
+    df: pd.DataFrame = pd.read_json("valid.jsonl", orient="records", lines=True)
+    df_generated: pd.DataFrame = pd.DataFrame(
+        [generate_instruction(row) for _, row in df.iterrows()]
+    )
+    df_generated.to_json(
+        "jcommonsenseqa_valid.jsonl", orient="records", force_ascii=False, lines=True
+    )
+
 
 
 if __name__ == "__main__":
