@@ -92,7 +92,9 @@ def save_data(data: List[Dict[str, str]], filename: str):
     data = list(map(add_index, enumerate(data)))
     data = list(map(fix_data, data))
 
-    pd.DataFrame(data).to_json(
+    df = pd.DataFrame(data)
+    df = df[['instruction', 'input', 'output']] 
+    df.to_json(
         filename, orient="records", force_ascii=False, lines=True
     )
 

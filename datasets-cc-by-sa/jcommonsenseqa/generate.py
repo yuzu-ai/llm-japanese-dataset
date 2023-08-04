@@ -5,7 +5,7 @@ import pandas as pd
 
 def generate_instruction(row: pd.Series) -> Dict[str, str]:
     instruction: Dict[str, str] = {
-        "index": str(row["q_id"]),
+        #"index": str(row["q_id"]),
         "instruction": row["question"],
         "input": "、".join([row[f"choice{i}"] for i in range(5)]),
         "output": row["choice{}".format(row["label"])],

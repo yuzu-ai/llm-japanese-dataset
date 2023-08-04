@@ -17,7 +17,7 @@ for split, url in URLS.items():
     df["input"] = ""
     df = df[["instruction", "input", "output"]]
     df["id"] = "F" + df.index.astype(str)
-
+    df = df[['instruction', 'input', 'output']]
     df.to_json(
         f"aio_{split}.jsonl", orient="records", force_ascii=False, lines=True
     )

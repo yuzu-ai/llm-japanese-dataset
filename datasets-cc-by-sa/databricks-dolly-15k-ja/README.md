@@ -2,7 +2,10 @@
 ## 作成方法
 https://github.com/kunishou/databricks-dolly-15k-ja から取得
 
+```
 curl https://raw.githubusercontent.com/kunishou/databricks-dolly-15k-ja/main/databricks-dolly-15k-ja.json > dolly-15k-ja_train.json
+jq -s add `find ./ -name "dolly-15k-ja_train.json" | sort` | jq -n -c --stream 'fromstream(1|truncate_stream(inputs)) | {instruction:.instruction, input:.input, output:.output}' > dolly-15k-ja_train.jsonl
+``````
 
 <!-- ```
 curl https://raw.githubusercontent.com/kunishou/databricks-dolly-15k-ja/main/databricks-dolly-15k-ja.json | bash ../../utils/jq-slice-json.sh
